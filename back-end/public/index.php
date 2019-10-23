@@ -35,5 +35,5 @@ try {
     Zend\Mvc\Application::init(require 'config/application.config.php')->run();
 
 } catch (\Exception $e) {
-    print_r($e->getMessage());
+    print_r($e);
 }

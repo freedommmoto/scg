@@ -2,6 +2,7 @@
     "require": {
         "zendframework/zendframework": "^3.0",
         "zendframework/zend-mvc": "^3.0",
-        "vlucas/phpdotenv": "^3.6"
+        "vlucas/phpdotenv": "^3.6",
+        "guzzlehttp/guzzle": "^6.3"
     }
 }

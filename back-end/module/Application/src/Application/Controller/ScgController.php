@@ -3,20 +3,22 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-use Zend\Db\Adapter\Adapter;
+//use Zend\Db\Adapter\Adapter;
 use Application\Models\Users;
 use Zend\View\Model\JsonModel;
 use Zend\Cache\StorageFactory;
+use Application\Services\GooglePlaceApi;
+use Application\Services\MathematicsService;
 
 class ScgController extends AbstractActionController
 {
-################################################################################ 
+
     public function __construct()
     {
         $this->cacheTime = 36000;
-        $this->now = date('Y-m-d H:i:s');
-        $this->config = include __DIR__ . '../../../../config/module.config.php';
-        $this->adapter = new Adapter($this->config['Db']);
+//        $this->now = date('Y-m-d H:i:s');
+//        $this->config = include __DIR__ . '../../../../config/module.config.php';
+//        $this->adapter = new Adapter($this->config['Db']);
     }
 
     public function _initCache()
@@ -39,42 +41,51 @@ class ScgController extends AbstractActionController
         return $cache;
     }
 
-
-################################################################################
     public function indexAction()
     {
         try {
-            return new JsonModel([
-                'status' => 'SUCCESS',
-                'message' => 'Here is your data',
-                'data' => [
-                    'full_name' => 'John Doe',
-                    'address' => '51 Middle st.'
-                ]
-            ]);
+            $data = ['ScgController' => true];
+            return new JsonModel($data);
 
         } catch (Exception $e) {
             print_r($e);
         }
     }
 
-################################################################################
-    public function testAction()
+    public function restaurantsAction()
     {
-        try {
-            $models = new Users($this->adapter, 1, 1);
-            $data = $models->getList();
-            return new JsonModel([
-                $data,
-                'status' => getenv('DB_USERNAME'),
-            ]);
+        $cache = $this->_initCache();
+        $cacheKey = 'restaurants';
+        $data = $cache->getItem($cacheKey);
 
-        } catch (Exception $e) {
-            print_r($e);
+        if (empty($data)) {
+            $googleService = new GooglePlaceApi();
+            $data = $googleService->getAllPage(true);
+            $cache->setItem($cacheKey, $data);
         }
+
+        return new JsonModel(
+            ['restaurants' => $data]
+        );
     }
 
-################################################################################
+    public function Action()
+    {
+        $cache = $this->_initCache();
+        $cacheKey = 'restaurants';
+        $data = $cache->getItem($cacheKey);
+
+        if (empty($data)) {
+            $googleService = new GooglePlaceApi();
+            $data = $googleService->getAllPage(true);
+            $cache->setItem($cacheKey, $data);
+        }
+
+        return new JsonModel(
+            ['restaurants' => $data]
+        );
+    }
+
     public function findXYZAction()
     {
         try {
@@ -85,7 +96,8 @@ class ScgController extends AbstractActionController
             $data = $cache->getItem($cacheKey);
 
             if (empty($data)) {
-                $data = $this->findXYZ();
+                $math = new MathematicsService();
+                $data = $math->findXYZValue();
                 $cache->setItem($cacheKey, $data);
             }
 
@@ -98,27 +110,21 @@ class ScgController extends AbstractActionController
         }
     }
 
-################################################################################
-    private function findXYZ()
+    public function testAction()
     {
-        $sumPerRound = 2;
-        $maxPosition = 6;
-        $minPosition = 0;
+        try {
+            $models = new Users($this->adapter, 1, 1);
+            $user = $models->getList();
+            $googleService = new GooglePlaceApi();
+            $name = $googleService->getAllPage(true);
+            return new JsonModel([
+                $user, $name,
+                'status' => getenv('DB_USERNAME'),
+            ]);
 
-        $baseValue = 9;
-        $startPosition = 2;
-
-        $arrayNum = range($minPosition, $maxPosition);
-        $arrayNum[$startPosition] = $baseValue;
-
-        foreach ($arrayNum as $position => $number) {
-            if ($position < $startPosition) {
-                $arrayNum[$position] = $baseValue - ($sumPerRound * ($startPosition - ($position - 1)));
-            } elseif ($position > $startPosition) {
-                $arrayNum[$position] = $arrayNum[$position - 1] + ($sumPerRound * $position);
-            }
+        } catch (Exception $e) {
+            print_r($e);
         }
-
-        return $arrayNum;
     }
+
 }
