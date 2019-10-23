@@ -57,10 +57,11 @@ class ScgController extends AbstractActionController
         $cache = $this->_initCache();
         $cacheKey = 'restaurants';
         $data = $cache->getItem($cacheKey);
+        //$cache->removeItems([$cacheKey]);
 
         if (empty($data)) {
             $googleService = new GooglePlaceApi();
-            $data = $googleService->getAllPage(true);
+            $data = $googleService->getAllPage();
             $cache->setItem($cacheKey, $data);
         }
 

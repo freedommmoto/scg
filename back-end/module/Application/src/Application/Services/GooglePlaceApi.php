@@ -6,14 +6,15 @@ use GuzzleHttp\Client;
 
 class GooglePlaceApi
 {
-    private $apiURL;
-
+    private $client;
+    private $placeURL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
+    private $photoURL = 'https://maps.googleapis.com/maps/api/place/photo';
     private $allPageData = [];
+    private $limitPage = 20;
 
     public function __construct()
     {
-        $this->apiURL = 'https://maps.googleapis.com/maps/api/place/textsearch/json';
-        $this->limitPage = 20;
+        $this->client = new Client();
     }
 
     /**
@@ -55,18 +56,41 @@ class GooglePlaceApi
 
         }
 
+
         if ($showOnlyName) {
             $this->getOnlyName();
+        } else {
+            $this->getPicture();
         }
 
         return $this->allPageData;
+    }
+
+    private function getPicture(): void
+    {
+        foreach ($this->allPageData as $key => $row) {
+
+            if (isset($row['photos'][0]['photo_reference'])) {
+                $this->client->get($this->photoURL, [
+                    'query' => [
+                        'key' => getenv('GOOGLE_SECRET_KEY'),
+                        'maxwidth' => 1024,
+                        'photoreference' => $row['photos'][0]['photo_reference']
+                    ],
+                    'on_stats' => function ($stats) use (&$url) {
+                        $url = $stats->getEffectiveUri();
+                    }
+                ]);
+                $this->allPageData[$key]['loaded_picture'] = (string)$url;
+            }
+        }
     }
 
     private function getOnlyName(): void
     {
         $rows = [];
         foreach ($this->allPageData as $row) {
-            $rows[] = $row['name'];
+            $rows[]['name'] = $row['name'];
         }
         $this->allPageData = [];
         $this->allPageData['name'] = $rows;
@@ -79,8 +103,7 @@ class GooglePlaceApi
      */
     public function getFirstPage(): array
     {
-        $client = new Client();
-        $response = $client->request('GET', $this->apiURL, ['query' => [
+        $response = $this->client->request('GET', $this->placeURL, ['query' => [
             'key' => getenv('GOOGLE_SECRET_KEY'),
             'query' => 'restaurants near Bang Sue, Bangkok',
             'location' => '13.8287752,100.5216388',
@@ -103,8 +126,7 @@ class GooglePlaceApi
      */
     private function getNextPage($nextPageToken): array
     {
-        $client = new Client();
-        $response = $client->request('GET', $this->apiURL, ['query' => [
+        $response = $this->client->request('GET', $this->placeURL, ['query' => [
             'key' => getenv('GOOGLE_SECRET_KEY'),
             'pagetoken' => $nextPageToken
         ]]);

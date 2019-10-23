@@ -1,7 +1,10 @@
 <template>
-    <div class="">
-        <div v-for="(restaurant,idx) in this.restaurants.name">
-            {{restaurant}}
+    <div class="asd">
+        restaurant page
+        <div v-for="(restaurant,idx) in this.restaurants">
+            asd
+            {{restaurant.name}}
+            <img :src="restaurant.loaded_picture" width="220">
         </div>
     </div>
 </template>
