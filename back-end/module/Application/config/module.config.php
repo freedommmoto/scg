@@ -2,51 +2,45 @@
 return array( 
     'router' => array(
         'routes' => array(
-            'home' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route'    => '/',
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action' => 'index',
-                    ),
-                ),
-            ),
-            'index' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route'    => '/[:lang/[:action[/][:id/]]]',
-                    'constraints' => array(
-                        'lang'   => '[a-zA-Z]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9_-]*[a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Index',
-                        'action' => 'index',
+//            'home' => array(
+//                'type' => 'Segment',
+//                'options' => array(
+//                    'route'    => '/',
+//                    'defaults' => array(
+//                        'controller' => 'Application\Controller\Index',
+//                        'action' => 'index',
+//                    ),
+//                ),
+//            ),
+//            'index' => array(
+//                'type' => 'Segment',
+//                'options' => array(
+//                    'route'    => '/[:lang/[:action[/][:id/]]]',
+//                    'constraints' => array(
+//                        'lang'   => '[a-zA-Z]*',
+//                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+//                        'id' => '[0-9_-]*[a-zA-Z0-9_-]*',
+//                    ),
+//                    'defaults' => array(
+//                        'controller' => 'Application\Controller\Index',
+//                        'action' => 'index',
+//                        'id' => '',
+//                        'lang' => 'th',
+//                    ),
+//                ),
+//            ),
+            'scg' => [
+                'type'    => 'Segment',
+                'options' => [
+                    'route'    => '/scg/[:action]',
+                    'defaults' => [
+                        'controller'    => 'Application\Controller\Scg',
+                        'action'        => 'index',
                         'id' => '',
                         'lang' => 'th',
-                    ),
-                ),
-            ),
-            /*
-            'xxx' => array(
-                'type' => 'Segment',
-                'options' => array(
-                    'route'    => '/engine/[:lang/[:action[/][:id/]]]',
-                    'constraints' => array(
-                        'lang'   => '[a-zA-Z]*',
-                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                        'id' => '[0-9_-]*[a-zA-Z0-9_-]*',
-                    ),
-                    'defaults' => array(
-                        'controller' => 'Application\Controller\Xxx',
-                        'action' => 'index',
-                        'id' => '',
-                        'lang' => 'th',
-                    ),
-                ),
-            ),*/
+                    ],
+                ],
+            ],
         ),
     ),
     'service_manager' => array(
@@ -72,7 +66,7 @@ return array(
         'invokables' => array(
             //add controller
             'Application\Controller\Index' => 'Application\Controller\IndexController',
-            'Application\Controller\Xxx' => 'Application\Controller\XxxController',
+            'Application\Controller\Scg' => 'Application\Controller\ScgController',
         ),
     ),
      
@@ -96,6 +90,9 @@ return array(
         'display_exceptions'       => true,
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
+        'strategies' => [
+            'ViewJsonStrategy',
+        ],
         /*
         'strategies' => array(
             'ViewJsonStrategy', // register JSON renderer strategy
@@ -119,8 +116,8 @@ return array(
         'driver_options' => array( 
             PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES \'UTF8\''
         ),
-        'username' => 'homestead',//getenv('DB_USERNAME'),
-        'password' => 'secret',//getenv('DB_PASSWORD'),
+        'username' => getenv('DB_USERNAME'),
+        'password' => getenv('DB_PASSWORD'),
     ),
 
     'service_manager' => array( 
@@ -136,4 +133,4 @@ return array(
         '1' =>['code'=>'en','name'=>'English','label'=>'English'],   
         '2' =>['code'=>'th','name'=>'Thai','label'=>'ภาษาไทย'],
     ),
-); 
+);

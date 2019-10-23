@@ -21,25 +21,26 @@ class Module
         $eventManager = $e->getApplication()->getEventManager();
         $moduleRouteListener = new ModuleRouteListener();
         $moduleRouteListener->attach($eventManager);
+
         
-        $sm = $e->getApplication()->getServiceManager();
-        $router = $sm->get('router');
-        $request = $sm->get('request');
-        $matchedRoute = $router->match($request);
-        $params = $matchedRoute->getParams();
-        $lang = @$params['lang'];
-        if(isset($lang) && $lang !== '') 
-        {
-            $translator = $e->getApplication()->getServiceManager()->get('MvcTranslator');
-            if($lang == 'th')
-            {
-                $translator->setLocale('th_TH');
-            }
-            else
-            {
-                $translator->setLocale('en_US');
-            }
-        }
+//        $sm = $e->getApplication()->getServiceManager();
+//        $router = $sm->get('router');
+//        $request = $sm->get('request');
+//        $matchedRoute = $router->match($request);
+//        $params = $matchedRoute->getParams();
+//        $lang = @$params['lang'];
+//        if(isset($lang) && $lang !== '')
+//        {
+//            $translator = $e->getApplication()->getServiceManager()->get('MvcTranslator');
+//            if($lang == 'th')
+//            {
+//                $translator->setLocale('th_TH');
+//            }
+//            else
+//            {
+//                $translator->setLocale('en_US');
+//            }
+//        }
     }
     
     public function getConfig()

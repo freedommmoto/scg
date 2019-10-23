@@ -12,3 +12,4 @@ composer.lock*
 *.ntvs*
 *.njsproj
 *.sln
+.env

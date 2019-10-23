@@ -1,6 +1,5 @@
 <?php
-try
-{  
+try {
     set_time_limit(3600);
     $contentHeader = ob_get_contents();
     header("Content-Type: text/html; charset=utf-8");
@@ -11,10 +10,10 @@ try
     #header('Content-Length: ' . strlen($contentHeader));
     header('Vary: Accept-Encoding');
     header("Access-Control-Allow-Origin: *");
-    error_reporting(E_ALL|E_STRICT);
- 	ini_set('display_errors', '1');
-	date_default_timezone_set('Asia/Bangkok');
- 	mb_internal_encoding("UTF-8");
+    error_reporting(E_ALL | E_STRICT);
+    ini_set('display_errors', '1');
+    date_default_timezone_set('Asia/Bangkok');
+    mb_internal_encoding("UTF-8");
     /**
      * This makes our life easier when dealing with paths. Everything is relative
      * to the application root now.
@@ -24,14 +23,17 @@ try
     if (php_sapi_name() === 'cli-server' && is_file(__DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))) {
         return false;
     }
-    
+
     // Setup autoloading
     require 'init_autoloader.php';
-    
+
+    //load .env before start Zend
+    $dotenv = Dotenv\Dotenv::create(__DIR__, '../.env');
+    $dotenv->load();
+
     // Run the application!
     Zend\Mvc\Application::init(require 'config/application.config.php')->run();
-}
-catch (\Exception $e)
-{
-    print_r($e);
+
+} catch (\Exception $e) {
+    print_r($e->getMessage());
 }
