@@ -1,6 +1,6 @@
 <template>
     <div class="container_web">
-        <h2>All restaurants in Bangsue </h2>
+<!--        <h2>All restaurants in Bangsue </h2>-->
 
         <div class="pro-catagory">
             <template v-for="(restaurant,idx) in this.restaurants">

@@ -8,6 +8,7 @@ use Application\Models\Users;
 use Zend\View\Model\JsonModel;
 use Zend\Cache\StorageFactory;
 use Application\Services\GooglePlaceApi;
+use Application\Services\LineBotApi;
 use Application\Services\MathematicsService;
 
 class ScgController extends AbstractActionController
@@ -46,6 +47,17 @@ class ScgController extends AbstractActionController
         try {
             $data = ['ScgController' => true];
             return new JsonModel($data);
+        } catch (Exception $e) {
+            print_r($e);
+        }
+    }
+
+    public function linewebhockAction()
+    {
+        try {
+            $lineApi = new LineBotApi();
+            $lineApi->webHook();
+            return new JsonModel(['web_hook' => true]);
 
         } catch (Exception $e) {
             print_r($e);
