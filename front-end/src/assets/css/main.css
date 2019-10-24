@@ -1,0 +1,43 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+#app {
+    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+}
+
+/* Restaurants */
+
+.pro-catagory {
+    width: 100%;
+}
+
+.single-products-catagory {
+    opacity: 0.9;
+    border: solid #fff 3px;
+}
+
+.single-products-catagory:hover {
+    opacity: 1;
+}
+
+.single-products-catagory .hover-content {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    color: #fff;
+    background: rgba(0, 0, 0, .5);
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.single-products-catagory:hover .hover-content {
+    color: #000;
+    background: rgba(255, 255, 255, .7);
+}
