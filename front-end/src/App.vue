@@ -1,12 +1,23 @@
 <template>
     <div id="app">
+        <TopBar></TopBar>
+        <div class="before_router"></div>
         <router-view/>
+        <Footer></Footer>
     </div>
 </template>
 
 <script>
+
+    import TopBar from './components/TopBar.vue'
+    import Footer from './components/Footer.vue'
+
     export default {
-        name: 'App'
+        name: 'App',
+        components: {
+            TopBar: TopBar,
+            Footer: Footer
+        },
     }
 </script>
 
