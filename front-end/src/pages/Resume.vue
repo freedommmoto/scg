@@ -1,6 +1,6 @@
 <template>
     <div class="container_web">
-        <h3>Resume</h3>
+        <img class="resume" src="@/assets/images/RESUME_PATARA_10_2019_2.png"/>
     </div>
 </template>
 

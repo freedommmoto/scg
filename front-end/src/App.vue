@@ -1,8 +1,9 @@
 <template>
     <div id="app">
         <TopBar></TopBar>
-        <div class="before_router"></div>
+        <div class="space_router"></div>
         <router-view/>
+        <div class="space_router"></div>
         <Footer></Footer>
     </div>
 </template>
