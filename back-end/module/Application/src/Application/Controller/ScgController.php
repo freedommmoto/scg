@@ -60,7 +60,6 @@ class ScgController extends AbstractActionController
             $lineLog = new LineLog();
             $lineApi = new LineBotApi();
             $restaurant = new Restaurants();
-            //file_put_contents('asd.txt', print_r('-1',true) . PHP_EOL, FILE_APPEND);
             //$lineApi->testWebHook();return ;
 
             $inputArray = $lineApi->getInput();
@@ -82,6 +81,7 @@ class ScgController extends AbstractActionController
 
                 $restaurantID = $lineApi->getRestaurantID();
                 $restaurant = $restaurant->getDetails($restaurantID);
+                file_put_contents('output.txt', json_encode($restaurant, true) . PHP_EOL, FILE_APPEND);
 
                 $lineApi->sendRestaurantDetails($restaurant); // 3)
                 $lineUser->updateUserRestaurant($restaurantID);
@@ -111,12 +111,16 @@ class ScgController extends AbstractActionController
     {
         $cache = $this->_initCache();
         $cacheKey = 'restaurants';
-        $data = $cache->getItem($cacheKey);
         //$cache->removeItems([$cacheKey]);
+        $data = $cache->getItem($cacheKey);
 
         if (empty($data)) {
             $googleService = new GooglePlaceApi();
             $data = $googleService->getAllPage();
+
+            $restaurant = new Restaurants();
+            $restaurant->saveRestaurants($data);
+
             $cache->setItem($cacheKey, $data);
         }
 

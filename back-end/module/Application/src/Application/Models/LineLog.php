@@ -50,7 +50,7 @@ class LineLog
                 , last_update = NOW() 
                 , output_status = " . $outputHttpStatus . "
                 WHERE id = " . $id . ";";
-            file_put_contents('output.txt', $sqlText . PHP_EOL, FILE_APPEND);
+
             $sql = $this->adapter->query($sqlText);
 
             if ($sql->execute()) {

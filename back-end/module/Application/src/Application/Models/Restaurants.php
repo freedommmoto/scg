@@ -3,6 +3,7 @@
 namespace Application\Models;
 
 use Zend\Db\Adapter\Adapter;
+use Zend\Db\ResultSet\ResultSet;
 
 class Restaurants
 {
@@ -15,92 +16,147 @@ class Restaurants
         $this->adapter = new Adapter($this->config['Db']);
     }
 
-    function getList()
+    function getList(): array
     {
-        $text = '       [{
-                            "type": "postback",
-                            "label": "ร้านคุ้มอีสาน",
-                            "data": 1
-                          },
-                          {
-                            "type": "postback",
-                            "label": "ร้านอาหารเจ เวจจี้ดิช",
-                            "data": 2
-                          },
-                          {
-                            "type": "postback",
-                             "label": "About Beef",
-                            "data": 3
-                          },
-                          {
-                            "type": "postback",
-                             "label": "ฉันยังไม่หิว",
-                            "data": "none"
-                          }]';
+        $sql = $this->adapter->query('SELECT * FROM restaurants ORDER BY RAND() LIMIT 3');
+        $results = $sql->execute();
 
-        return json_decode($text, true);
+        $resultSet = new ResultSet;
+        $rs = $resultSet->initialize($results);
+        $rows = $rs->toArray();
+
+        if (!empty($rows)) {
+            $results = [];
+            foreach ($rows as $row) {
+                $result = [];
+                $result['type'] = 'postback';
+                $result['label'] = $row['name'];
+                $result['data'] = (int)$row['id'];
+                $results[] = $result;
+            }
+            $results[] = ['type' => 'postback', 'label' => 'ฉันยังไม่หิว', 'data' => 0];
+
+            return $results;
+        }
+
+//        $text = '       [{
+//                            "type": "postback",
+//                            "label": "ร้านคุ้มอีสาน",
+//                            "data": 1
+//                          },
+//                          {
+//                            "type": "postback",
+//                            "label": "ร้านอาหารเจ เวจจี้ดิช",
+//                            "data": 2
+//                          },
+//                          {
+//                            "type": "postback",
+//                             "label": "About Beef",
+//                             "data": 3
+//                          },
+//                          {
+//                            "type": "postback",
+//                             "label": "ฉันยังไม่หิว",
+//                            "data": 0
+//                          }]';
+//
+//        return json_decode($text, true);
     }
 
-    function getDetails($id): array
+    /**
+     * @param int $id
+     * @return array
+     */
+    function getDetails(int $id): array
     {
-        return ['name' => 'โกอ่างโภชนา สวนสน',
-            'id' => 'eda48d4f977af7a455eca1eea383759510460e2d',
+        $sql = $this->adapter->query("SELECT * FROM restaurants where id = '" . $id . "' LIMIT 1");
+        $results = $sql->execute();
+
+        $resultSet = new ResultSet;
+        $rs = $resultSet->initialize($results);
+        $row = $rs->toArray();
+
+        if (isset($row[0]['name'])) {
+            $row = $row[0];
+            return [
+                'name' => $row['name'],
+                'id' => $id,
+                'address' => $row['address'],
+                'img' => $row['img'],
+            ];
+        }
+
+        return [
+            'name' => 'โกอ่างโภชนา สวนสน',
+            'id' => 1,
             'address' => "1128/10 ถนน ประชาราษฏร์ สาย1, บางซื่อ, Bangkok 10800, Thailand", //formatted_address
             'img' => 'https://lh3.googleusercontent.com/p/AF1QipM-AuigFwtqReObR2B_-XB8ng8ip0cBatFGv8QP=s1600-w1024'
         ];
     }
 
     /**
-     * @param array $inputArray
-     * @return int
+     * @param array $restaurantsList
      */
-    function insert(array $inputArray): int
+    function saveRestaurants(array $restaurantsList): void
     {
-        $return = 0;
         try {
-            $id = $this->getNextID();
-            $sqlText = "INSERT INTO line_log ( id , input_json, added_date, last_update) 
-                        VALUES  ( " . $id . ",'" . json_encode($inputArray) . "', NOW(), NOW())";
-            file_put_contents('output.txt', $sqlText . PHP_EOL, FILE_APPEND);
-            $sql = $this->adapter->query($sqlText);
-            if ($sql->execute()) {
-                $return = $id;
+            /**
+             * create table restaurants
+             * (
+             * id          integer primary key auto_increment,
+             * google_id   varchar(90) not null,
+             * name        varchar(120) default null,
+             * address     text,
+             * img         text,
+             * added_date  datetime default null,
+             * last_update datetime default null
+             * );
+             * );
+             */
+
+            foreach ($restaurantsList as $restaurant) {
+                if (!isset($restaurant['id']) || !isset($restaurant['loaded_picture'])) {
+                    continue;
+                }
+
+                if (empty($restaurant['id']) || empty($restaurant['loaded_picture'])) {
+                    continue;
+                }
+
+                $sql = $this->adapter->query("SELECT * FROM restaurants where google_id = '" . $restaurant['id'] . "' LIMIT 1");
+                $results = $sql->execute();
+                if (!empty($results->current())) {
+                    continue;
+                }
+
+                $id = $this->getNextID();
+                $sqlText = "INSERT INTO restaurants ( id , google_id, name, address , img , added_date , last_update) 
+                VALUES  ( " . $id . "
+                    ,'" . $restaurant['id'] . "'
+                    ,'" . $restaurant['name'] . "'
+                    ,'" . $restaurant['formatted_address'] . "'
+                    ,'" . $restaurant['loaded_picture'] . "'
+                    , NOW()
+                    , NOW()
+                    )";
+
+                $sql = $this->adapter->query($sqlText);
+                $sql->execute();
+
             }
+
         } catch (\Exception $e) {
-            $return = 0;
+            //Exception
         }
-        return $return;
+
     }
 
     /**
-     * @param int $id
-     * @param array $outputArray
-     * @param int $outputHttpStatus
-     * @return bool
+     * @return int
      */
-    function update(int $id, array $outputArray, int $outputHttpStatus): bool
+    function getNextID(): int
     {
-        try {
-            $sqlText = "UPDATE line_log SET output_json = '" . json_encode($outputArray) . "' 
-                , last_update = NOW() 
-                , output_status = " . $outputHttpStatus . "
-                WHERE id = " . $id . ";";
-            file_put_contents('output.txt', $sqlText . PHP_EOL, FILE_APPEND);
-            $sql = $this->adapter->query($sqlText);
-
-            if ($sql->execute()) {
-                return true;
-            }
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return false;
-    }
-
-    function getNextID()
-    {
-        $sql = $this->adapter->query("SELECT MAX(id)+1 as id FROM `line_log` LIMIT 1");
+        $sql = $this->adapter->query("SELECT MAX(id)+1 as id FROM `restaurants` LIMIT 1");
         $results = $sql->execute();
         $row = $results->current();
         $id = $row['id'];
