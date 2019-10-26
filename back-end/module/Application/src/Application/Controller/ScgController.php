@@ -3,8 +3,9 @@
 namespace Application\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
-//use Zend\Db\Adapter\Adapter;
+
 use Application\Models\Users;
+use Application\Models\LineLog;
 use Zend\View\Model\JsonModel;
 use Zend\Cache\StorageFactory;
 use Application\Services\GooglePlaceApi;
@@ -17,9 +18,6 @@ class ScgController extends AbstractActionController
     public function __construct()
     {
         $this->cacheTime = 36000;
-//        $this->now = date('Y-m-d H:i:s');
-//        $this->config = include __DIR__ . '../../../../config/module.config.php';
-//        $this->adapter = new Adapter($this->config['Db']);
     }
 
     public function _initCache()
@@ -55,8 +53,41 @@ class ScgController extends AbstractActionController
     public function linewebhockAction()
     {
         try {
+            $lineLog = new LineLog();
+//            $lineUser = new lineUser();
             $lineApi = new LineBotApi();
-            $lineApi->webHook();
+
+//            $rOrder = new RestaurantOrder();
+//            $restaurant = new Restaurants();
+
+            $lineApi->testWebHook();
+            $inputArray = $lineApi->getInput();
+            $logID = $lineLog->insert($inputArray);
+
+
+//            $userData = $lineUser->getUserData($inputArray);
+//
+//            if ($lineApi->checkUserIsOrder()) { // 1)
+//                $restaurant->getList();
+//                $lineApi->sendRestaurantsList();
+//
+//            } else if ($lineApi->checkUserIsSelectRestaurant()) { // 2)
+//                $restaurant = $restaurant->getDetails();
+//                $lineApi->sendRestaurantDetails($restaurant);        // 3)
+//                $lineApi->askUserWhatDoYouWantForOrder($restaurant); // 3)
+//                $userData->updateUserData($inputArray, true);
+//
+//            } else if ($userData['ordering']) { // 4)
+//                $lineApi->sendThankyouMessage();
+//                $rOrder->insert($userData, $inputArray);
+//
+//            } else { // 5)
+//                $userData->updateUserData($inputArray, null);
+//                $lineApi->sendNotUndestandMessage();
+//            }
+
+            $lineLog->update($logID, $lineApi->getOutput(), $lineApi->getOutputStatus());
+
             return new JsonModel(['web_hook' => true]);
 
         } catch (Exception $e) {

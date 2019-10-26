@@ -13,3 +13,6 @@ composer.lock*
 *.njsproj
 *.sln
 .env
+
+output.txt
+input.txt
