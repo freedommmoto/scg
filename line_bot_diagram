@@ -1,6 +1,6 @@
-<mxfile host="www.draw.io" modified="2019-10-25T15:54:37.858Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" etag="Bf21nqOG6PF1JaAJnpME" version="12.1.7" type="github" pages="1">
+<mxfile host="www.draw.io" modified="2019-10-26T10:23:03.035Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.120 Safari/537.36" etag="MmKdsPBsAAcCa0iVbrZg" version="12.1.7" type="github" pages="1">
   <diagram id="b7GknOC-psWMYFbC6eAa" name="Page-1">
-    <mxGraphModel dx="2066" dy="1087" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1426" dy="753" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
@@ -19,7 +19,7 @@
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="ZDn2qaMk5V0e7OeE0g_s-5" target="ZDn2qaMk5V0e7OeE0g_s-1" edge="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-5" value="bot ตอบ user &lt;br&gt;&quot;ฉันไม่เข้าใจที่คุณพูด กรุณาลองพิมพ์&lt;br&gt;สั้งข้าว กับฉันดู&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-5" value="5) bot ตอบ user &lt;br&gt;&quot;ฉันไม่เข้าใจที่คุณพูด กรุณาลองพิมพ์&lt;br&gt;สั้งข้าว กับฉันดู&quot;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="160" y="340" width="120" height="60" as="geometry"/>
         </mxCell>
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZDn2qaMk5V0e7OeE0g_s-7" edge="1">
@@ -45,14 +45,6 @@
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-17" value="user เลือกร้านอาหาร 1 ใน 3 ร้าน" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="460" y="470" width="130" height="40" as="geometry"/>
         </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZDn2qaMk5V0e7OeE0g_s-18" edge="1">
-          <mxGeometry relative="1" as="geometry">
-            <mxPoint x="450" y="910" as="targetPoint"/>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-18" value="4) ส่งข้อมูลร้านอาหาร&lt;br&gt;พร้อมรูปภาพ&lt;br&gt;และ bot ถามลูกค้า ว่า&lt;br&gt;&quot;เลือกสั้งอะไรของร้าน&lt;br&gt;XX ดี?&quot;" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="390" y="730" width="120" height="120" as="geometry"/>
-        </mxCell>
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-19" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="449" y="730" as="targetPoint"/>
@@ -62,23 +54,20 @@
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-21" value="user เลือก &quot;ยังไม่หิว&quot;&lt;br&gt;จบการทำงาน&lt;br&gt;กลับไปเรื่ม 1)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
           <mxGeometry x="220" y="480" width="120" height="20" as="geometry"/>
         </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-22" value="ส่งข้อมูลให้ user" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="450" y="680" width="120" height="20" as="geometry"/>
-        </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-23" value="user พิมพ์อะไรสักอย่างมา bot มองเป็นชื่อ menu" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="480" y="870" width="240" height="20" as="geometry"/>
+        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-22" value="user พิมพ์อะไรสักอย่างมา bot มองเป็นชื่อ menu" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="450" y="680" width="300" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.3;entryDx=0;entryDy=0;" parent="1" source="ZDn2qaMk5V0e7OeE0g_s-25" target="ZDn2qaMk5V0e7OeE0g_s-27" edge="1">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-25" value="5) bot ตอบกลับ user ว่า&amp;nbsp;&lt;br&gt;&quot;เราได้ทำการส่งรายการ&lt;br&gt;อาหาร เรียบร้อยแล้ว&quot;&lt;br&gt;จบการทำงาน&lt;br&gt;กลับไปเรื่ม 1)" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
-          <mxGeometry x="390" y="910" width="120" height="120" as="geometry"/>
+        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-25" value="4) bot ตอบกลับ user ว่า&amp;nbsp;&lt;br&gt;&quot;เราได้ทำการส่งรายการ&lt;br&gt;อาหาร เรียบร้อยแล้ว&quot;&lt;br&gt;จบการทำงาน&lt;br&gt;กลับไปเรื่ม 1)" style="whiteSpace=wrap;html=1;aspect=fixed;fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="390" y="730" width="120" height="120" as="geometry"/>
         </mxCell>
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-27" value="" style="shape=cylinder;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
-          <mxGeometry x="190" y="930" width="60" height="80" as="geometry"/>
+          <mxGeometry x="200" y="750" width="60" height="80" as="geometry"/>
         </mxCell>
-        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-29" value="เก็บข้อมูลลง database" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-          <mxGeometry x="260" y="980" width="120" height="20" as="geometry"/>
+        <mxCell id="ZDn2qaMk5V0e7OeE0g_s-29" value="เก็บข้อมูล order&lt;br&gt;ลง database" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+          <mxGeometry x="170" y="840" width="120" height="20" as="geometry"/>
         </mxCell>
         <mxCell id="ZDn2qaMk5V0e7OeE0g_s-36" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="1" source="ZDn2qaMk5V0e7OeE0g_s-34" target="ZDn2qaMk5V0e7OeE0g_s-1" edge="1">
           <mxGeometry relative="1" as="geometry"/>
