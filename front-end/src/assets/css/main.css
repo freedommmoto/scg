@@ -22,9 +22,10 @@ body {
     margin: 0 auto;
 }
 
-.resume{
+.resume {
     width: 100%;
 }
+
 .footer_link {
     box-sizing: border-box;
     padding: 12px;
@@ -121,4 +122,12 @@ body {
 .single-products-catagory:hover .hover-content {
     color: #000;
     background: rgba(255, 255, 255, .7);
+}
+
+.img_line_diagram {
+    width: 90%;
+    margin: 0 auto;
+}
+.ped10{
+    padding: 10px;
 }

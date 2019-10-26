@@ -54,6 +54,24 @@ class ScgController extends AbstractActionController
         }
     }
 
+    public function orderAction()
+    {
+        $cache = $this->_initCache();
+        $cacheKey = 'order';
+        $cache->removeItems([$cacheKey]);
+        $data = $cache->getItem($cacheKey);
+
+        if (empty($data)) {
+            $rOrder = new RestaurantOrder();
+            $data = $rOrder->getOrderAll();
+            $cache->setItem($cacheKey, $data);
+        }
+
+        return new JsonModel(
+            ['order' => $data]
+        );
+    }
+
     public function linewebhockAction()
     {
         try {
@@ -86,8 +104,11 @@ class ScgController extends AbstractActionController
             } else if ($userData['restaurant_id'] > 0) { // 4)
                 $lineApi->sendThankyouMessage();
                 $rOrder = new RestaurantOrder();
-                $rOrder->insert($userData, $lineApi->getLastUserText() );
+                $rOrder->insert($userData, $lineApi->getLastUserText());
                 $lineUser->updateUserRestaurant(0);
+                //clear order cache
+                $cache = $this->_initCache();
+                $cache->removeItems(['order']);
 
             } else { // 5)
                 $lineUser->updateUserRestaurant(0);
