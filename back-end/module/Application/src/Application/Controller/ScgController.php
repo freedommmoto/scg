@@ -6,7 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 use Application\Models\Users;
 use Application\Models\LineLog;
-use Application\Models\lineUser;
+use Application\Models\LineUser;
 use Application\Models\RestaurantOrder;
 use Application\Models\Restaurants;
 
@@ -58,20 +58,20 @@ class ScgController extends AbstractActionController
     {
         try {
             $lineLog = new LineLog();
-            $lineUser = new lineUser();
             $lineApi = new LineBotApi();
             $restaurant = new Restaurants();
-
-//            $lineApi->testWebHook();return ;
+            //file_put_contents('asd.txt', print_r('-1',true) . PHP_EOL, FILE_APPEND);
+            //$lineApi->testWebHook();return ;
 
             $inputArray = $lineApi->getInput();
             $logID = $lineLog->insert($inputArray);
-
-            $userData = $lineUser->getUserData($inputArray);
+            $lineUser = new LineUser();
+            $lineUser->setLineUserID($lineApi->getUserID());
+            $userData = $lineUser->getUserData();
 
             if (empty($userData)) {
-                $lineUser->saveNewUser($inputArray);
-                $userData['ordering'] = false;
+                $lineUser->saveNewUser();
+                $userData['restaurant_id'] = 0;
             }
 
             if ($lineApi->checkUserIsOrder()) { // 1)
@@ -79,20 +79,22 @@ class ScgController extends AbstractActionController
                 $lineApi->sendRestaurantsList($restaurants);
 
             } else if ($lineApi->checkUserIsSelectRestaurant()) { // 2)
+
                 $restaurantID = $lineApi->getRestaurantID();
                 $restaurant = $restaurant->getDetails($restaurantID);
 
-                $lineApi->sendRestaurantDetails($restaurant);               // 3)
-                $lineUser->updateUserData($inputArray, true);
+                $lineApi->sendRestaurantDetails($restaurant); // 3)
+                $lineUser->updateUserRestaurant($restaurantID);
 
-            } else if ($userData['ordering']) { // 4)
+            } else if ($userData['restaurant_id'] > 0) { // 4)
                 $lineApi->sendThankyouMessage();
 
                 $rOrder = new RestaurantOrder();
                 $rOrder->insert($userData, $inputArray);
+                $lineUser->updateUserRestaurant(0);
 
             } else { // 5)
-                $lineUser->updateUserData($inputArray, false);
+                $lineUser->updateUserRestaurant(0);
                 $lineApi->sendNotUndestandMessage();
             }
 

@@ -26,7 +26,7 @@ class LineLog
             $id = $this->getNextID();
             $sqlText = "INSERT INTO line_log ( id , input_json, added_date, last_update) 
                         VALUES  ( " . $id . ",'" . json_encode($inputArray) . "', NOW(), NOW())";
-            file_put_contents('output.txt', $sqlText . PHP_EOL, FILE_APPEND);
+
             $sql = $this->adapter->query($sqlText);
             if ($sql->execute()) {
                 $return = $id;

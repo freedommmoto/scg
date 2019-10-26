@@ -18,6 +18,53 @@ class LineBotApi
     }
 
     /**
+     * @return array
+     */
+    public function getInput(): array
+    {
+        return $this->inputArray;
+    }
+
+    public function getUserID(): string
+    {
+        if (isset($this->inputArray['events'][0]['source']['userId'])) {
+            return $this->inputArray['events'][0]['source']['userId'];
+        }
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutput(): array
+    {
+        return $this->outputArray;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOutputStatus(): int
+    {
+        return $this->outputStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRestaurantID(): string
+    {
+        return $this->restaurantID;
+    }
+
+    private function setInputData(): void
+    {
+        $jsonInput = file_get_contents('php://input');
+        file_put_contents('input.txt', $jsonInput . PHP_EOL, FILE_APPEND);
+        $this->inputArray = json_decode($jsonInput, true);
+    }
+
+    /**
      * @return bool
      */
     public function testWebHook(): bool
@@ -68,53 +115,10 @@ class LineBotApi
     public function checkUserIsSelectRestaurant(): bool
     {
         if (isset($this->inputArray['events'][0]['postback']['data'])) {
-            $postbackData = $this->inputArray['events'][0]['postback']['data'];
-
-            if (!isset($postbackData['id'])) {
-                $postbackData['id'] = 'none';
-            } else {
-                $this->restaurantID = $postbackData;
-            }
-
-            if ((string)$postbackData['id'] !== 'none') {
-                return true;
-            }
-
-            file_put_contents('postback.txt', $postbackData . PHP_EOL, FILE_APPEND);
+            $this->restaurantID = (int)$this->inputArray['events'][0]['postback']['data'];
+            return true;
         }
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    public function getInput(): array
-    {
-        return $this->inputArray;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOutput(): array
-    {
-        return $this->outputArray;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOutputStatus(): int
-    {
-        return $this->outputStatus;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRestaurantID(): string
-    {
-        return $this->restaurantID;
     }
 
     /**
@@ -202,13 +206,6 @@ class LineBotApi
                       "actions": ' . json_encode($restaurants, true) . '
                   }
                 }', true);
-    }
-
-    public function setInputData(): void
-    {
-        $jsonInput = file_get_contents('php://input');
-        file_put_contents('input.txt', $jsonInput . PHP_EOL, FILE_APPEND);
-        $this->inputArray = json_decode($jsonInput, true);
     }
 
 }
