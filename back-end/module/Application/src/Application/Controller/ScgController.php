@@ -78,19 +78,15 @@ class ScgController extends AbstractActionController
                 $lineApi->sendRestaurantsList($restaurants);
 
             } else if ($lineApi->checkUserIsSelectRestaurant()) { // 2)
-
                 $restaurantID = $lineApi->getRestaurantID();
                 $restaurant = $restaurant->getDetails($restaurantID);
-                file_put_contents('output.txt', json_encode($restaurant, true) . PHP_EOL, FILE_APPEND);
-
                 $lineApi->sendRestaurantDetails($restaurant); // 3)
                 $lineUser->updateUserRestaurant($restaurantID);
 
             } else if ($userData['restaurant_id'] > 0) { // 4)
                 $lineApi->sendThankyouMessage();
-
                 $rOrder = new RestaurantOrder();
-                $rOrder->insert($userData, $inputArray);
+                $rOrder->insert($userData, $lineApi->getLastUserText() );
                 $lineUser->updateUserRestaurant(0);
 
             } else { // 5)

@@ -57,6 +57,17 @@ class LineBotApi
         return $this->restaurantID;
     }
 
+    /**
+     * @return string
+     */
+    public function getLastUserText(): string
+    {
+        if (isset($this->inputArray['events'][0]['message']['text'])) {
+            return $this->inputArray['events'][0]['message']['text'];
+        }
+        return '';
+    }
+
     private function setInputData(): void
     {
         $jsonInput = file_get_contents('php://input');
@@ -126,11 +137,8 @@ class LineBotApi
      */
     public function checkUserIsOrder(): bool
     {
-        if (isset($this->inputArray['events'][0]['message']['text'])) {
-            $userText = $this->inputArray['events'][0]['message']['text'];
-            if (strpos($userText, 'สั้ง') !== false) {
-                return true;
-            }
+        if (strpos($this->getLastUserText(), 'สั้ง') !== false) {
+            return true;
         }
 
         return false;

@@ -16,56 +16,44 @@ class RestaurantOrder
     }
 
     /**
-     * @param array $inputArray
-     * @return int
+     * @param array $userData
+     * @param $orderName\
      */
-    function insert(array $inputArray): int
+    function insert(array $userData, $orderName): void
     {
-        $return = 0;
+
+        /**
+         * create table restaurant_order
+         * (
+         * id            integer primary key auto_increment,
+         * restaurant_id integer,
+         * order_text    text,
+         * user_id       int      default null,
+         * added_date    datetime default null,
+         * last_update   datetime default null
+         * );
+         */
+
         try {
             $id = $this->getNextID();
-            $sqlText = "INSERT INTO line_log ( id , input_json, added_date, last_update) 
-                        VALUES  ( " . $id . ",'" . json_encode($inputArray) . "', NOW(), NOW())";
+            $sqlText = "INSERT INTO restaurant_order ( id ,restaurant_id,order_text,user_id, added_date, last_update) 
+                        VALUES  ( " . $id . ","
+                . $userData['restaurant_id'] . ","
+                . "'" . $orderName . "' ,"
+                . $userData['id'] . ","
+                . "NOW() ,
+                   NOW())";
 
             $sql = $this->adapter->query($sqlText);
-            if ($sql->execute()) {
-                $return = $id;
-            }
+            $sql->execute();
         } catch (\Exception $e) {
-            $return = 0;
+            //
         }
-        return $return;
-    }
-
-    /**
-     * @param int $id
-     * @param array $outputArray
-     * @param int $outputHttpStatus
-     * @return bool
-     */
-    function update(int $id, array $outputArray, int $outputHttpStatus): bool
-    {
-        try {
-            $sqlText = "UPDATE line_log SET output_json = '" . json_encode($outputArray) . "' 
-                , last_update = NOW() 
-                , output_status = " . $outputHttpStatus . "
-                WHERE id = " . $id . ";";
-            file_put_contents('output.txt', $sqlText . PHP_EOL, FILE_APPEND);
-            $sql = $this->adapter->query($sqlText);
-
-            if ($sql->execute()) {
-                return true;
-            }
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        return false;
     }
 
     function getNextID()
     {
-        $sql = $this->adapter->query("SELECT MAX(id)+1 as id FROM `line_log` LIMIT 1");
+        $sql = $this->adapter->query("SELECT MAX(id)+1 as id FROM `restaurant_order` LIMIT 1");
         $results = $sql->execute();
         $row = $results->current();
         $id = $row['id'];
