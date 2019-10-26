@@ -6,6 +6,10 @@ use Zend\Mvc\Controller\AbstractActionController;
 
 use Application\Models\Users;
 use Application\Models\LineLog;
+use Application\Models\lineUser;
+use Application\Models\RestaurantOrder;
+use Application\Models\Restaurants;
+
 use Zend\View\Model\JsonModel;
 use Zend\Cache\StorageFactory;
 use Application\Services\GooglePlaceApi;
@@ -54,37 +58,43 @@ class ScgController extends AbstractActionController
     {
         try {
             $lineLog = new LineLog();
-//            $lineUser = new lineUser();
+            $lineUser = new lineUser();
             $lineApi = new LineBotApi();
+            $restaurant = new Restaurants();
 
-//            $rOrder = new RestaurantOrder();
-//            $restaurant = new Restaurants();
+//            $lineApi->testWebHook();return ;
 
-            $lineApi->testWebHook();
             $inputArray = $lineApi->getInput();
             $logID = $lineLog->insert($inputArray);
 
+            $userData = $lineUser->getUserData($inputArray);
 
-//            $userData = $lineUser->getUserData($inputArray);
-//
-//            if ($lineApi->checkUserIsOrder()) { // 1)
-//                $restaurant->getList();
-//                $lineApi->sendRestaurantsList();
-//
-//            } else if ($lineApi->checkUserIsSelectRestaurant()) { // 2)
-//                $restaurant = $restaurant->getDetails();
-//                $lineApi->sendRestaurantDetails($restaurant);        // 3)
-//                $lineApi->askUserWhatDoYouWantForOrder($restaurant); // 3)
-//                $userData->updateUserData($inputArray, true);
-//
-//            } else if ($userData['ordering']) { // 4)
-//                $lineApi->sendThankyouMessage();
-//                $rOrder->insert($userData, $inputArray);
-//
-//            } else { // 5)
-//                $userData->updateUserData($inputArray, null);
-//                $lineApi->sendNotUndestandMessage();
-//            }
+            if (empty($userData)) {
+                $lineUser->saveNewUser($inputArray);
+                $userData['ordering'] = false;
+            }
+
+            if ($lineApi->checkUserIsOrder()) { // 1)
+                $restaurants = $restaurant->getList();
+                $lineApi->sendRestaurantsList($restaurants);
+
+            } else if ($lineApi->checkUserIsSelectRestaurant()) { // 2)
+                $restaurantID = $lineApi->getRestaurantID();
+                $restaurant = $restaurant->getDetails($restaurantID);
+
+                $lineApi->sendRestaurantDetails($restaurant);               // 3)
+                $lineUser->updateUserData($inputArray, true);
+
+            } else if ($userData['ordering']) { // 4)
+                $lineApi->sendThankyouMessage();
+
+                $rOrder = new RestaurantOrder();
+                $rOrder->insert($userData, $inputArray);
+
+            } else { // 5)
+                $lineUser->updateUserData($inputArray, false);
+                $lineApi->sendNotUndestandMessage();
+            }
 
             $lineLog->update($logID, $lineApi->getOutput(), $lineApi->getOutputStatus());
 

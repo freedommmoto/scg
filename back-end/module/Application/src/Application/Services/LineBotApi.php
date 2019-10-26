@@ -10,21 +10,79 @@ class LineBotApi
     private $inputArray = [];
     private $outputArray = [];
     private $outputStatus = 0;
+    private $restaurantID = '';
+
+    public function __construct()
+    {
+        $this->setInputData();
+    }
 
     /**
      * @return bool
      */
     public function testWebHook(): bool
     {
-        $this->setInputData();
-        $replyToken = $this->inputArray['events'][0]['replyToken'];
-
         $messages = [];
-        $messages['replyToken'] = $replyToken;
         $messages['messages'][0] = $this->getFormatTextMessage('ฮัลโหลเวิลด์');
-        //$messages['messages'][0] = $this->getFormatTextTemplateMessageJson();
+        $messages['messages'][1] = $this->getFormatPictureMessage('https://lh3.googleusercontent.com/p/AF1QipM-AuigFwtqReObR2B_-XB8ng8ip0cBatFGv8QP=s1600-w1024');
+        //$messages['messages'][2] = $this->getFormatTextTemplateMessageJson();
 
         return $this->sentMessage($messages);
+    }
+
+    /**
+     * @param array $restaurants
+     * @return bool|\Psr\Http\Message\ResponseInterface
+     */
+    public function sendRestaurantsList(array $restaurants)
+    {
+        $messages = [];
+        $messages['messages'][0] = $this->getFormatTextTemplateMessageJson($restaurants);
+        return $this->sentMessage($messages);
+    }
+
+    public function sendThankyouMessage()
+    {
+        $messages = [];
+        $messages['messages'][0] = $this->getFormatTextMessage('เราได้ทำการส่งรายการอาหาร เรียบร้อยแล้ว');
+        return $this->sentMessage($messages);
+    }
+
+    public function sendNotUndestandMessage()
+    {
+        $messages = [];
+        $messages['messages'][0] = $this->getFormatTextMessage('ฉันไม่เข้าใจที่คุณพูด กรุณาลองพิมพ์ "สั้งข้าว" กับฉันดู');
+        return $this->sentMessage($messages);
+    }
+
+    public function sendRestaurantDetails($restaurant)
+    {
+        $messages = [];
+        $messages['messages'][0] = $this->getFormatTextMessage('คุณเลือกร้าน ' . $restaurant['name']);
+        $messages['messages'][1] = $this->getFormatTextMessage(' ที่อยู่ : ' . $restaurant['address']);
+        $messages['messages'][2] = $this->getFormatPictureMessage($restaurant['img']);
+        $messages['messages'][3] = $this->getFormatTextMessage('เลือกสั้งอะไรของร้าน ' . $restaurant['name'] . ' ดี?');
+        return $this->sentMessage($messages);
+    }
+
+    public function checkUserIsSelectRestaurant(): bool
+    {
+        if (isset($this->inputArray['events'][0]['postback']['data'])) {
+            $postbackData = $this->inputArray['events'][0]['postback']['data'];
+
+            if (!isset($postbackData['id'])) {
+                $postbackData['id'] = 'none';
+            } else {
+                $this->restaurantID = $postbackData;
+            }
+
+            if ((string)$postbackData['id'] !== 'none') {
+                return true;
+            }
+
+            file_put_contents('postback.txt', $postbackData . PHP_EOL, FILE_APPEND);
+        }
+        return false;
     }
 
     /**
@@ -51,13 +109,36 @@ class LineBotApi
         return $this->outputStatus;
     }
 
+    /**
+     * @return string
+     */
+    public function getRestaurantID(): string
+    {
+        return $this->restaurantID;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkUserIsOrder(): bool
+    {
+        if (isset($this->inputArray['events'][0]['message']['text'])) {
+            $userText = $this->inputArray['events'][0]['message']['text'];
+            if (strpos($userText, 'สั้ง') !== false) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * @param $messages
      * @return \Psr\Http\Message\ResponseInterface
      */
-    private function sentMessage($messages): bool
+    private function sentMessage(array $messages): bool
     {
+        $messages['replyToken'] = $this->inputArray['events'][0]['replyToken'];
         $this->outputArray = $messages;
         file_put_contents('output.txt', json_encode($messages, true) . PHP_EOL, FILE_APPEND);
 
@@ -86,7 +167,21 @@ class LineBotApi
         return $datas;
     }
 
-    private function getFormatTextTemplateMessageJson()
+    /**
+     * @param string $imgUrl
+     * @return array
+     */
+    private function getFormatPictureMessage($imgUrl): array
+    {
+        $datas = [];
+        $datas['type'] = 'image';
+        $datas['originalContentUrl'] = $imgUrl;
+        $datas['previewImageUrl'] = $imgUrl;
+
+        return $datas;
+    }
+
+    private function getFormatTextTemplateMessageJson(array $restaurants)
     {
         return json_decode('{
                   "type": "template",
@@ -104,33 +199,12 @@ class LineBotApi
                           "label": "View detail",
                           "uri": "http://example.com/page/123"
                       },
-                      "actions": [
-                          {
-                            "type": "postback",
-                            "label": "ร้านคุ้มอีสาน",
-                            "data": "action=buy&itemid=123"
-                          },
-                          {
-                            "type": "postback",
-                            "label": "ร้านอาหารเจ เวจจี้ดิช",
-                            "data": "action=add&itemid=123"
-                          },
-                          {
-                            "type": "postback",
-                             "label": "About Beef",
-                            "data": "action=add&itemid=123"
-                          },
-                          {
-                            "type": "postback",
-                             "label": "ฉันยังไม่หิว",
-                            "data": "action=add&itemid=123"
-                          }
-                      ]
+                      "actions": ' . json_encode($restaurants, true) . '
                   }
                 }', true);
     }
 
-    private function setInputData(): void
+    public function setInputData(): void
     {
         $jsonInput = file_get_contents('php://input');
         file_put_contents('input.txt', $jsonInput . PHP_EOL, FILE_APPEND);
