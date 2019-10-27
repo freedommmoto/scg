@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/pages/HelloWorld'
+
 import Restaurants from '@/pages/Restaurants'
 import XYZValue from '@/pages/XYZValue'
 import Linebot from '@/pages/Linebot'
@@ -22,8 +22,8 @@ export default new Router({
             component: Restaurants
         },
         {
-            path: '/xyzvalue',
-            name: 'XYZValue',
+            path: '/scg',
+            name: 'SCG',
             component: XYZValue
         },
         {
