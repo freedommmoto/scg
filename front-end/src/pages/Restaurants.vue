@@ -1,6 +1,6 @@
 <template>
     <div class="container_web">
-<!--        <h2>All restaurants in Bangsue </h2>-->
+        <!--        <h2>All restaurants in Bangsue </h2>-->
 
         <div class="pro-catagory">
             <template v-for="(restaurant,idx) in this.restaurants">
@@ -35,7 +35,13 @@
             }
         },
         mounted() {
-            this.getRestaurants()
+            let restaurants = JSON.parse(sessionStorage.getItem("restaurants"));
+            if (!restaurants) {
+                this.getRestaurants()
+            } else {
+                this.restaurants = restaurants
+            }
+            this.loadRenderMasonry()
         },
         methods: {
             async getRestaurants() {
@@ -43,17 +49,27 @@
                 if (res.data.restaurants) {
                     this.restaurants = res.data.restaurants
 
-                    this.restaurants.sort(function () {
-                        return .5 - Math.random();
-                    });
-
                     let $this = this
                     setTimeout(function () {
                         $this.renderMasonry()
                     }, 200);
+
+                    sessionStorage.setItem("restaurants", JSON.stringify(this.restaurants));
                 }
 
-            }, renderMasonry() {
+            },
+            loadRenderMasonry() {
+                this.restaurants.sort(function () {
+                    return .5 - Math.random();
+                });
+
+                let $this = this
+                setTimeout(function () {
+                    $this.renderMasonry()
+                }, 500);
+            },
+            renderMasonry() {
+
                 const grid = document.querySelector('.pro-catagory')
                 const singleProCata = '.single-products-catagory'
                 const msnry = new Masonry(grid, {

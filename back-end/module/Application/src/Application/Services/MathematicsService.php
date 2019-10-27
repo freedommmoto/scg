@@ -10,24 +10,15 @@ class MathematicsService
      */
     public function findXYZValue()
     {
-        $sumPerRound = 2;
-        $maxPosition = 6;
-        $minPosition = 0;
+        $xyzNumberList = [];
 
-        $baseValue = 9;
-        $startPosition = 2;
-
-        $arrayNum = range($minPosition, $maxPosition);//init array
-        $arrayNum[$startPosition] = $baseValue;
-
-        foreach ($arrayNum as $position => $number) {
-            if ($position < $startPosition) {
-                $arrayNum[$position] = $baseValue - ($sumPerRound * ($startPosition - ($position - 1)));
-            } elseif ($position > $startPosition) {
-                $arrayNum[$position] = $arrayNum[$position - 1] + ($sumPerRound * $position);
-            }
+        for ($round = 1; $round <= 7; $round++) {
+            $lastNumber = isset($xyzNumberList[$round - 1]) ? $xyzNumberList[$round - 1] : 1;
+            $lastRound = ($round - 1 === 0) ? 1 : $round - 1;
+            $thisRoundNumber = ($lastRound * 2) + $lastNumber;
+            $xyzNumberList[$round] = $thisRoundNumber;
         }
 
-        return $arrayNum;
+        return $xyzNumberList;
     }
 }

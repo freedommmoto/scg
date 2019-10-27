@@ -14,14 +14,22 @@
 <script>
     export default {
         name: 'XYZValue',
-        created() {
-            this.findingXYZ()
-        },
         data() {
             return {
                 'xyzNumberList': [],
                 'xyzPosition': [1, 6, 7]
             }
+        },
+        created() {
+            let xyzNumberList = JSON.parse(localStorage.getItem("xyzNumberList"));
+
+            if (!xyzNumberList) {
+                this.findingXYZ()
+                localStorage.setItem("xyzNumberList", JSON.stringify(this.xyzNumberList));
+            } else {
+                this.xyzNumberList = xyzNumberList
+            }
+
         }, methods: {
             findingXYZ() {
                 for (let round = 1; round <= 7; round++) {

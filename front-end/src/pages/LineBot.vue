@@ -45,12 +45,19 @@
                 orderList: []
             }
         }, mounted() {
-            this.getOrder()
+            let orderList = JSON.parse(sessionStorage.getItem("orderList"));
+            if (!orderList) {
+                this.getOrder()
+            } else {
+                this.orderList = orderList
+            }
+
         }, methods: {
             async getOrder() {
                 const res = await axios.get('/order')
                 if (res.data.order) {
                     this.orderList = res.data.order
+                    sessionStorage.setItem("orderList", JSON.stringify(this.orderList));
                 }
             }
         }

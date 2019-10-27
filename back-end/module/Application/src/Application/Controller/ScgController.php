@@ -168,8 +168,7 @@ class ScgController extends AbstractActionController
         try {
             $cache = $this->_initCache();
             $cacheKey = 'findXYZ';
-            //$cache->removeItems([$cacheKey]);
-
+            $cache->removeItems([$cacheKey]);
             $data = $cache->getItem($cacheKey);
 
             if (empty($data)) {
